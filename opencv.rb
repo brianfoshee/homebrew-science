@@ -2,8 +2,8 @@ require 'formula'
 
 class Opencv < Formula
   homepage 'http://opencv.org/'
-  url 'http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.6.1/opencv-2.4.6.1.tar.gz'
-  sha1 'e015bd67218844b38daf3cea8aab505b592a66c0'
+  url 'https://github.com/Itseez/opencv/archive/2.4.7.tar.gz'
+  sha1 '67ec788943894d4be3dff6efd7720591108feb29'
 
   option '32-bit'
   option 'with-qt',  'Build the Qt4 backend to HighGUI'
@@ -15,7 +15,7 @@ class Opencv < Formula
   depends_on 'numpy' => :python
   depends_on :python
 
-  depends_on 'eigen'   => :optional
+  depends_on 'eigen'   => :build
   depends_on 'libtiff' => :optional
   depends_on 'jasper'  => :optional
   depends_on 'tbb'     => :optional
@@ -47,7 +47,9 @@ class Opencv < Formula
       args << "-DCMAKE_OSX_ARCHITECTURES=i386"
       args << "-DOPENCV_EXTRA_C_FLAGS='-arch i386 -m32'"
       args << "-DOPENCV_EXTRA_CXX_FLAGS='-arch i386 -m32'"
+      args << "-DOPENCV_EXTRA_CXX_FLAGS='-arch i386 -m32 -Wunsequenced'"
     end
+    args << "-DOPENCV_EXTRA_CXX_FLAGS='-Wunsequenced'"
     args << '-DWITH_QT=ON' if build.with? 'qt'
     args << '-DWITH_TBB=ON' if build.with? 'tbb'
     # OpenCL 1.1 is required, but Snow Leopard and older come with 1.0
@@ -61,7 +63,6 @@ class Opencv < Formula
       system "make install"
     end
   end
-
 
   def caveats
     python.standard_caveats if python
